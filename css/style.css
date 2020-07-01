@@ -1,0 +1,66 @@
+@import url(https://fonts.googleapis.com/css?family=Didact+Gothic|Comfortaa:400,700&subset=latin,cyrillic);
+*{
+    margin:0;
+    padding:0;
+    font-family: 'Comfortaa', Arial;
+}
+
+body {
+    background: rgb(255, 255, 255);
+}
+
+.navbar__position{
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    width: 100%;
+    height: 50px; 
+    background: rgb(255, 255, 255);
+}
+
+.navbar{
+    background-image: linear-gradient(to top right, rgb(101, 115, 255), rgb(111, 114, 247), rgb(120, 114, 239), rgb(130, 113, 231), rgb(139, 112, 223), rgb(149, 111, 215), rgb(158, 111, 208), rgb(168, 110, 200), rgb(177, 109, 192), rgb(187, 108, 184), rgb(196, 108, 176), rgb(206, 107, 168));
+    align-items: center;
+    color: white;
+}
+
+.wrapper{
+    justify-content: space-around;
+    margin: 0 auto;
+    min-width: 700px;
+    max-width: 1000px;
+    display:flex;
+    align-content: center;
+    height: calc(100vh - 77px);
+}
+
+.field__cells{
+    display:grid;
+    border: 1px solid rgb(101, 115, 255);
+    grid-template-columns: repeat(10, 1fr);
+}
+.field__title{
+    text-align: center;
+}
+.field__cell{
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgb(101, 115, 255);
+    transition: background-color 0.3s;
+}
+.field__cell:hover{
+    background: rgb(129, 25, 177);
+    opacity: 0.7;
+}
+.text_vs{
+    align-self: center;
+}
+
+.field_position{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+footer{
+
+}
