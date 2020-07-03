@@ -378,7 +378,7 @@ name()
 const navbarButtonPlay = document.querySelector(".navbar__button_play")
 navbarButtonPlay.addEventListener("click", function () {
     // clearCells()
-
+    generateCells();
     document.querySelector('.text_vs').innerHTML = 'VS';
     for (let i = 0; i < fields.length; i++) {
 
@@ -388,6 +388,7 @@ navbarButtonPlay.addEventListener("click", function () {
 
         if (i == playerIndex)
             field.generateShips();
+
         fields[i] = field;
 
         clearTimeout(timerId);
@@ -395,5 +396,5 @@ navbarButtonPlay.addEventListener("click", function () {
 
     playerMove = 1;
     playerNext();
-    generateCells();
+
 });
