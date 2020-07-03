@@ -6,10 +6,9 @@ const computerIndex = 1;
 let playerMove = 0;
 
 function name() {
-    var doc = prompt("Enter name:", "text");
-    if (doc != null) {
-        document.getElementById("defaultd").innerHTML = doc;
-    }
+    var doc = prompt("Enter name:", "Игрок");
+    document.getElementById("name").innerHTML = doc;
+
 }
 
 function playerNext() {
