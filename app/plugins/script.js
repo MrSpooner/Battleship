@@ -3,35 +3,49 @@
 let cells = [];
 const playerIndex = 0;
 const computerIndex = 1;
-let playerMove = 0;
+let playerMove = 1;
+const playerNames = document.querySelectorAll(".field__title");
 
 function name() {
     var doc = prompt("Enter name:", "Игрок");
     document.getElementById("name").innerHTML = doc;
-
 }
 
 function playerNext() {
+    const playerMoveOld = playerMove;
+
     playerMove = (playerMove + 1) % 2;
 
-    let hitDetect = true;
-    let i = 0;
-    if (playerMove == computerIndex) {
-        while (hitDetect && i < 100) {
-            i++;
-            const accessibleCell = fields[playerIndex].calcAccessibleCells();
-            const accessibleIndex = Math.floor(Math.random() * accessibleCell.length);
-            const accessibleElem = accessibleCell[accessibleIndex];
-            hitDetect = fields[playerIndex].fire(accessibleElem.x, accessibleElem.y);
-        }
+    playerNames[playerMove].className = 'field__title field__title_highlight';
+    playerNames[playerMoveOld].className = 'field__title';
 
-        playerNext();
-    }
+    if (playerMove == computerIndex)
+        pcMove();
+
+}
+let timerId;
+function pcMove() {
+
+    let hitDetect = true;
+
+    timerId = setTimeout(function tick() {
+        const accessibleCell = fields[playerIndex].calcAccessibleCells();
+        const accessibleIndex = Math.floor(Math.random() * accessibleCell.length);
+        const accessibleElem = accessibleCell[accessibleIndex];
+        hitDetect = fields[playerIndex].fire(accessibleElem.x, accessibleElem.y);
+        if (hitDetect)
+            timerId = setTimeout(tick, 500);
+        else
+            playerNext();
+    }, 500);
+
+
 }
 
 function generateCells() {
     let fieldCells = document.querySelectorAll('.field__cells');
     for (let j = 0; j < fieldCells.length; j++) {
+        fieldCells[j].innerHTML = '';
         cells[j] = [];
         for (let x = 0; x < 10; x++) {
             cells[j][x] = [];
@@ -50,9 +64,8 @@ function generateCells() {
 }
 
 function clickCell(fieldIndex, x, y) {
-    if (fieldIndex == computerIndex) {
+    if ((fieldIndex == computerIndex) && (playerMove == playerIndex)) {
         const fire = fields[fieldIndex].fire(x, y);
-
         if (!fire) {
             playerNext();
         }
@@ -60,12 +73,12 @@ function clickCell(fieldIndex, x, y) {
 }
 
 class FieldShips {
-    constructor() {
-        this.fieldVisible = false;
-        this.fieldIndex = 0;
+    constructor(fieldIndex, fieldVisible) {
         this.arrayField = [];
         this.ships = [];
         this.accessibleField = [];
+        this.fieldIndex = fieldIndex;
+        this.fieldVisible = fieldVisible;
         this.accessibleFieldChange();
     }
 
@@ -156,7 +169,12 @@ class FieldShips {
             }
 
             if (won) {
-                alert('won');
+                if (this.fieldIndex == playerIndex) {
+                    document.querySelector('.text_vs').innerHTML = 'Победа компьютера';
+                }
+                else {
+                    document.querySelector('.text_vs').innerHTML = 'Вы победили!';
+                }
             }
             return true;
         }
@@ -173,9 +191,9 @@ class FieldShips {
     generateShip(ship) {
         let sizeX, sizeY;
         if (ship.dir == 0)
-            sizeY = ship.size;
+            sizeX = ship.size;
         else
-            sizeY = 1;
+            sizeX = 1;
 
         if (ship.dir == 1)
             sizeY = ship.size;
@@ -335,13 +353,47 @@ generateCells();
 
 let fields = [];
 for (let i = 0; i < 2; i++) {
-    const field = new FieldShips();
-    field.fieldIndex = i;
-    this.fieldVisible = i == playerIndex;
+    const field = new FieldShips(i, i == playerIndex);
+
     field.shipsPositioning();
 
     if (i == playerIndex)
         field.generateShips();
     fields.push(field);
 }
+playerNext();
 name()
+
+// function clearCells() {
+//     cells.length = 0;
+//     fieldCells.length = 0;
+//     arrayField.length = 0;
+//     accessibleField.length = 0;
+
+//     let fieldCells = [];
+//     let cells = [];
+//     let arrayField = [];
+//     let accessibleField = [];
+// }
+const navbarButtonPlay = document.querySelector(".navbar__button_play")
+navbarButtonPlay.addEventListener("click", function () {
+    // clearCells()
+
+    document.querySelector('.text_vs').innerHTML = 'VS';
+    for (let i = 0; i < fields.length; i++) {
+
+        const field = new FieldShips(i, i == playerIndex);
+
+        field.shipsPositioning();
+
+        if (i == playerIndex)
+            field.generateShips();
+        fields[i] = field;
+
+        clearTimeout(timerId);
+    }
+
+    playerMove = 1;
+    playerNext();
+    generateCells();
+});
