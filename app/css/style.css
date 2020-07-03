@@ -109,7 +109,7 @@ body {
 footer{
     background:  #531253d0;
     box-shadow: 0 -200px 100px -120px rgba(43, 159, 226, 0.418) inset;
-    animation: background 25s infinite alternate;
+    animation: background 20s infinite alternate;
     color:white;
 }
 @keyframes background {

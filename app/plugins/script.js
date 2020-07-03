@@ -6,11 +6,12 @@ const computerIndex = 1;
 let playerMove = 1;
 const playerNames = document.querySelectorAll(".field__title");
 
+//ввод никнейма игрока
 function name() {
     var doc = prompt("Enter name:", "Игрок");
     document.getElementById("name").innerHTML = doc;
 }
-
+//переход хода
 function playerNext() {
     const playerMoveOld = playerMove;
 
@@ -23,7 +24,9 @@ function playerNext() {
         pcMove();
 
 }
+
 let timerId;
+//ход компьютера
 function pcMove() {
 
     let hitDetect = true;
@@ -33,6 +36,7 @@ function pcMove() {
         const accessibleIndex = Math.floor(Math.random() * accessibleCell.length);
         const accessibleElem = accessibleCell[accessibleIndex];
         hitDetect = fields[playerIndex].fire(accessibleElem.x, accessibleElem.y);
+        //таймер для эмуляции продумывания хода компьютером
         if (hitDetect)
             timerId = setTimeout(tick, 500);
         else
@@ -41,7 +45,7 @@ function pcMove() {
 
 
 }
-
+//генерация клеток поля
 function generateCells() {
     let fieldCells = document.querySelectorAll('.field__cells');
     for (let j = 0; j < fieldCells.length; j++) {
@@ -62,7 +66,7 @@ function generateCells() {
         }
     }
 }
-
+//реализация выстрела игроком при нажатии
 function clickCell(fieldIndex, x, y) {
     if ((fieldIndex == computerIndex) && (playerMove == playerIndex)) {
         const fire = fields[fieldIndex].fire(x, y);
@@ -81,7 +85,7 @@ class FieldShips {
         this.fieldVisible = fieldVisible;
         this.accessibleFieldChange();
     }
-
+    //вычисление доступных для выстрела клеток
     calcAccessibleCells() {
         let accessibleCell = [];
         for (let x = 0; x < 10; x++) {
@@ -93,15 +97,14 @@ class FieldShips {
         }
         return accessibleCell;
     }
-
+    //вычисление доступной для выстрела клетки
     shootAccess(x, y) {
         if (this.arrayField[x][y] >= 0) {
             return true;
         }
-
         return false;
     }
-
+    //вывод попаданий на экран 
     generateLabel(x, y) {
         if (this.arrayField[x][y] == -1) {
             const XElem = document.createElement('div');
@@ -117,8 +120,11 @@ class FieldShips {
             cells[this.fieldIndex][x][y].appendChild(OElem);
         }
     }
-
+    //реализация стрельбы
     fire(x, y) {
+        // индекс больше нуля присвоен кораблям
+        // индекс -1 у клеток, в которых было попадание по кораблю
+        // индекс -2 у клеток, в которых был промах
         if (this.shootAccess(x, y)) {
             if (this.arrayField[x][y] > 0) {
                 this.arrayField[x][y] = -1;
@@ -129,7 +135,6 @@ class FieldShips {
                 this.generateLabel(x, y);
                 return false;
             }
-
 
             for (let k = 0; k < this.ships.length; k++) {
                 let shipPartCount = 0;
@@ -180,14 +185,14 @@ class FieldShips {
         }
         return true;
     }
-
+    //генерация кораблей
     generateShips() {
         for (let i = 0; i < this.ships.length; i++) {
             const ship = this.ships[i];
             this.generateShip(ship);
         }
     }
-
+    //генерация корабля
     generateShip(ship) {
         let sizeX, sizeY;
         if (ship.dir == 0)
@@ -206,7 +211,7 @@ class FieldShips {
             }
         }
     }
-
+    //создание массива с данными о клетках
     createFieldArray() {
         for (let i = 0; i < 10; i++) {
             this.arrayField[i] = [];
@@ -236,7 +241,7 @@ class FieldShips {
             }
         }
     }
-
+    //вычисление занимаемого кораблем области
     spaceRequired(ship) {
         let sizeX, sizeY, startX, startY, endX, endY;
         if (ship.dir == 0)
@@ -271,7 +276,7 @@ class FieldShips {
 
         return { startX, startY, endX, endY };
     }
-
+    //расстановка кораблей
     shipsPositioning() {
         this.ships = [];
         for (let size = 4; size >= 1; size--) {
@@ -298,14 +303,14 @@ class FieldShips {
         }
         this.createFieldArray();
     }
-
+    //
     pushShips(...ships) {
         for (let i in ships) {
             if (!this.ships.includes(ships[i])) this.ships.push(ships[i]);
         }
         this.accessibleFieldChange();
     }
-
+    //проверка возможности расположения корабля
     accessCheck(ship) {
         if (
             (ship.dir == 0 && ship.x + ship.size > 10) ||
@@ -326,7 +331,7 @@ class FieldShips {
             }
         return true;
     }
-
+    //обновлние массива доступных клеток 
     accessibleFieldChange() {
         let arrayField = [];
         for (let i = 0; i < 11; i++) {
@@ -363,21 +368,9 @@ for (let i = 0; i < 2; i++) {
 }
 playerNext();
 name()
-
-// function clearCells() {
-//     cells.length = 0;
-//     fieldCells.length = 0;
-//     arrayField.length = 0;
-//     accessibleField.length = 0;
-
-//     let fieldCells = [];
-//     let cells = [];
-//     let arrayField = [];
-//     let accessibleField = [];
-// }
+//реализация рестарта игры
 const navbarButtonPlay = document.querySelector(".navbar__button_play")
 navbarButtonPlay.addEventListener("click", function () {
-    // clearCells()
     generateCells();
     document.querySelector('.text_vs').innerHTML = 'VS';
     for (let i = 0; i < fields.length; i++) {
@@ -396,5 +389,4 @@ navbarButtonPlay.addEventListener("click", function () {
 
     playerMove = 1;
     playerNext();
-
 });
